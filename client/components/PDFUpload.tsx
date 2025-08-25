@@ -273,15 +273,24 @@ export default function PDFUpload({ onTransactionsImported }: PDFUploadProps) {
 
         if (dateMatch && amountMatch) {
           try {
-            // Return transaction in EXACT format expected by main system
+            // Use Excel's customer extraction logic on the combined line
+            const depositor = extractDepositorFromParticularsAlt(combinedLine);
+
+            // Determine transaction type like Excel does
+            let type = "OTHER";
+            if (combinedLine.includes("UPI") || combinedLine.includes("MPAY")) type = "UPI";
+            else if (combinedLine.includes("TRANSFER")) type = "TRANSFER";
+            else if (combinedLine.includes("NEFT")) type = "NEFT";
+            else if (combinedLine.includes("RTGS")) type = "RTGS";
+
             const transaction = {
               date: formatDate(dateMatch[1]),
               particulars: combinedLine.substring(0, 100),
-              depositor: "Unknown Customer",
+              depositor,
               deposits: parseFloat(amountMatch[1].replace(/,/g, "")),
               withdrawals: 0,
               balance: 0,
-              type: "OTHER",
+              type,
             };
             transactions.push(transaction);
             console.log("Alternative parsing found transaction:", transaction);
