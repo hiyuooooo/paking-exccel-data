@@ -1,173 +1,177 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Transaction Manager - Simple Version</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        
-        .container {
-            text-align: center;
-            max-width: 800px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            opacity: 0.9;
-        }
-        
-        .status {
-            background: rgba(76, 175, 80, 0.2);
-            border: 1px solid rgba(76, 175, 80, 0.5);
-            padding: 15px 25px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-size: 1.1rem;
-        }
-        
-        .buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 30px;
-        }
-        
-        .btn {
-            padding: 12px 30px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 25px;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .btn.primary {
-            background: rgba(76, 175, 80, 0.3);
-            border-color: rgba(76, 175, 80, 0.5);
-        }
-        
-        .info {
-            margin-top: 40px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-        
-        .api-status {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: monospace;
-        }
-        
-        .success { background: rgba(76, 175, 80, 0.3); }
-        .error { background: rgba(244, 67, 54, 0.3); }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+
+      .container {
+        text-align: center;
+        max-width: 800px;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 40px;
+        opacity: 0.9;
+      }
+
+      .status {
+        background: rgba(76, 175, 80, 0.2);
+        border: 1px solid rgba(76, 175, 80, 0.5);
+        padding: 15px 25px;
+        border-radius: 10px;
+        margin: 20px 0;
+        font-size: 1.1rem;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+      }
+
+      .btn {
+        padding: 12px 30px;
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn.primary {
+        background: rgba(76, 175, 80, 0.3);
+        border-color: rgba(76, 175, 80, 0.5);
+      }
+
+      .info {
+        margin-top: 40px;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      .api-status {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: monospace;
+      }
+
+      .success {
+        background: rgba(76, 175, 80, 0.3);
+      }
+      .error {
+        background: rgba(244, 67, 54, 0.3);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>🚀 Transaction Manager</h1>
-        <p class="subtitle">Simple Web Application - Local Server</p>
-        
-        <div class="status">
-            ✅ Server Running Successfully!<br>
-            <small>Local Web Server Active</small>
-        </div>
-        
-        <div class="buttons">
-            <a href="/" class="btn primary">Open Full App</a>
-            <button class="btn" onclick="testAPI()">Test API</button>
-            <button class="btn" onclick="checkStatus()">Check Status</button>
-        </div>
-        
-        <div class="info">
-            <h3>🎯 Server Information</h3>
-            <p><strong>Local Server:</strong> Running on this port</p>
-            <p><strong>API Endpoints:</strong> /api/ping, /api/demo</p>
-            <p><strong>Static Files:</strong> Served from public directory</p>
-            <p><strong>Main App:</strong> React SPA available at root path</p>
-        </div>
-        
-        <div id="api-result" class="api-status" style="display: none;"></div>
+      <h1>🚀 Transaction Manager</h1>
+      <p class="subtitle">Simple Web Application - Local Server</p>
+
+      <div class="status">
+        ✅ Server Running Successfully!<br />
+        <small>Local Web Server Active</small>
+      </div>
+
+      <div class="buttons">
+        <a href="/" class="btn primary">Open Full App</a>
+        <button class="btn" onclick="testAPI()">Test API</button>
+        <button class="btn" onclick="checkStatus()">Check Status</button>
+      </div>
+
+      <div class="info">
+        <h3>🎯 Server Information</h3>
+        <p><strong>Local Server:</strong> Running on this port</p>
+        <p><strong>API Endpoints:</strong> /api/ping, /api/demo</p>
+        <p><strong>Static Files:</strong> Served from public directory</p>
+        <p><strong>Main App:</strong> React SPA available at root path</p>
+      </div>
+
+      <div id="api-result" class="api-status" style="display: none"></div>
     </div>
 
     <script>
-        async function testAPI() {
-            const resultDiv = document.getElementById('api-result');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = 'Testing API...';
-            
-            try {
-                const response = await fetch('/api/ping');
-                const data = await response.json();
-                resultDiv.className = 'api-status success';
-                resultDiv.innerHTML = `✅ API Test Successful!<br>Response: ${JSON.stringify(data, null, 2)}`;
-            } catch (error) {
-                resultDiv.className = 'api-status error';
-                resultDiv.innerHTML = `❌ API Test Failed!<br>Error: ${error.message}`;
-            }
+      async function testAPI() {
+        const resultDiv = document.getElementById("api-result");
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "Testing API...";
+
+        try {
+          const response = await fetch("/api/ping");
+          const data = await response.json();
+          resultDiv.className = "api-status success";
+          resultDiv.innerHTML = `✅ API Test Successful!<br>Response: ${JSON.stringify(data, null, 2)}`;
+        } catch (error) {
+          resultDiv.className = "api-status error";
+          resultDiv.innerHTML = `❌ API Test Failed!<br>Error: ${error.message}`;
         }
-        
-        async function checkStatus() {
-            const resultDiv = document.getElementById('api-result');
-            resultDiv.style.display = 'block';
-            resultDiv.className = 'api-status success';
-            
-            const info = {
-                timestamp: new Date().toLocaleString(),
-                userAgent: navigator.userAgent,
-                url: window.location.href,
-                protocol: window.location.protocol,
-                host: window.location.host
-            };
-            
-            resultDiv.innerHTML = `📊 System Status:<br><pre>${JSON.stringify(info, null, 2)}</pre>`;
-        }
-        
-        // Auto-check API on load
-        window.addEventListener('load', () => {
-            setTimeout(testAPI, 1000);
-        });
+      }
+
+      async function checkStatus() {
+        const resultDiv = document.getElementById("api-result");
+        resultDiv.style.display = "block";
+        resultDiv.className = "api-status success";
+
+        const info = {
+          timestamp: new Date().toLocaleString(),
+          userAgent: navigator.userAgent,
+          url: window.location.href,
+          protocol: window.location.protocol,
+          host: window.location.host,
+        };
+
+        resultDiv.innerHTML = `📊 System Status:<br><pre>${JSON.stringify(info, null, 2)}</pre>`;
+      }
+
+      // Auto-check API on load
+      window.addEventListener("load", () => {
+        setTimeout(testAPI, 1000);
+      });
     </script>
-</body>
+  </body>
 </html>
