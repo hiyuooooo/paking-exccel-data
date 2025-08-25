@@ -273,8 +273,8 @@ export default function PDFUpload({ onTransactionsImported }: PDFUploadProps) {
 
         if (dateMatch && amountMatch) {
           try {
+            // Return transaction in EXACT format expected by main system
             const transaction = {
-              id: Date.now() + i,
               date: formatDate(dateMatch[1]),
               particulars: combinedLine.substring(0, 100),
               depositor: "Unknown Customer",
