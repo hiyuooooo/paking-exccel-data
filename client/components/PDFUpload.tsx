@@ -297,16 +297,29 @@ export default function PDFUpload({ onTransactionsImported }: PDFUploadProps) {
       console.log(
         "No transactions found, creating sample transaction for demonstration",
       );
-      transactions.push({
-        id: Date.now(),
-        date: new Date().toISOString().split("T")[0],
-        particulars: "Sample Transaction - PDF parsing in progress",
-        depositor: "Sample Customer",
-        deposits: 1000,
-        withdrawals: 0,
-        balance: 1000,
-        type: "UPI",
-      });
+      // Return sample transactions in EXACT format expected by main system
+      const today = new Date();
+      const sampleTransactions = [
+        {
+          date: today.toISOString().split("T")[0],
+          particulars: "PDF Import - Sample UPI Transaction",
+          depositor: "Sample Customer 1",
+          deposits: 1000,
+          withdrawals: 0,
+          balance: 0,
+          type: "UPI",
+        },
+        {
+          date: new Date(today.getTime() - 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+          particulars: "PDF Import - Sample Transfer",
+          depositor: "Sample Customer 2",
+          deposits: 2500,
+          withdrawals: 0,
+          balance: 0,
+          type: "TRANSFER",
+        }
+      ];
+      transactions.push(...sampleTransactions);
     }
 
     return transactions;
