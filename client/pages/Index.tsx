@@ -197,21 +197,54 @@ export default function Index() {
   const handleTransactionsImported = (importedTransactions: any[]) => {
     console.log("Importing transactions:", importedTransactions);
 
-    // Merge with existing transactions
-    const newTransactions = [...transactions, ...importedTransactions];
+    if (!importedTransactions || importedTransactions.length === 0) {
+      alert("No transactions to import.");
+      return;
+    }
+
+    // Ensure all imported transactions have proper IDs and structure
+    const processedTransactions = importedTransactions.map((transaction, index) => ({
+      id: transaction.id || Date.now() + index + Math.random() * 1000,
+      date: transaction.date || new Date().toISOString().split("T")[0],
+      particulars: transaction.particulars || "Imported Transaction",
+      depositor: transaction.depositor || "Unknown Customer",
+      deposits: Number(transaction.deposits) || 0,
+      withdrawals: Number(transaction.withdrawals) || 0,
+      balance: Number(transaction.balance) || 0,
+      type: transaction.type || "OTHER",
+    }));
+
+    console.log("Processed transactions for import:", processedTransactions);
+
+    // Merge with existing transactions and remove duplicates
+    const existingIds = new Set(transactions.map(t => t.id));
+    const uniqueNewTransactions = processedTransactions.filter(t => !existingIds.has(t.id));
+
+    const allTransactions = [...transactions, ...uniqueNewTransactions];
 
     // Sort by date
-    newTransactions.sort(
+    allTransactions.sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
 
-    setTransactions(newTransactions);
+    // Recalculate running balance
+    let runningBalance = 10000; // Starting balance
+    const transactionsWithBalance = allTransactions.map((transaction) => {
+      runningBalance += transaction.deposits - transaction.withdrawals;
+      return {
+        ...transaction,
+        balance: runningBalance,
+      };
+    });
 
-    // Update customers based on new transactions
+    console.log("Final transactions with balance:", transactionsWithBalance.slice(-5));
+    setTransactions(transactionsWithBalance);
+
+    // Update customers based on all transactions
     const customerMap = new Map();
 
-    newTransactions.forEach((transaction) => {
-      if (transaction.deposits > 0) {
+    transactionsWithBalance.forEach((transaction) => {
+      if (transaction.deposits > 0 && transaction.depositor !== "Unknown Customer") {
         const existing = customerMap.get(transaction.depositor) || {
           id: Date.now() + Math.random(),
           name: transaction.depositor,
@@ -223,7 +256,9 @@ export default function Index() {
 
         existing.totalDeposits += transaction.deposits;
         existing.transactionCount += 1;
-        existing.lastTransaction = transaction.date;
+        if (new Date(transaction.date) > new Date(existing.lastTransaction)) {
+          existing.lastTransaction = transaction.date;
+        }
 
         customerMap.set(transaction.depositor, existing);
       }
@@ -233,7 +268,7 @@ export default function Index() {
     setImportDialogOpen(false);
 
     // Show success message
-    alert(`Successfully imported ${importedTransactions.length} transactions!`);
+    alert(`Successfully imported ${uniqueNewTransactions.length} new transactions! Total transactions: ${transactionsWithBalance.length}`);
   };
 
   const handleImportClick = (type: "pdf" | "excel") => {
