@@ -35,16 +35,19 @@ pnpm start
 ## 🌍 Deployment Options
 
 ### Netlify (Recommended)
+
 - Connect to [Netlify MCP](#open-mcp-popover)
 - Automatic builds from git repository
 - CDN and hosting included
 
 ### Vercel
-- Connect to [Vercel MCP](#open-mcp-popover)  
+
+- Connect to [Vercel MCP](#open-mcp-popover)
 - Zero-config deployment
 - Automatic previews
 
 ### Manual Deployment
+
 1. Run `pnpm build`
 2. Deploy `dist/spa/` folder to any static hosting
 3. Deploy `dist/server/` to Node.js hosting for API
@@ -54,7 +57,7 @@ pnpm start
 ```
 client/               # React frontend
 ├── pages/            # Route components
-├── components/       # Reusable components  
+├── components/       # Reusable components
 ├── lib/             # Utilities
 └── App.tsx          # Main app with routing
 
@@ -83,7 +86,7 @@ shared/              # Shared types
 
 - Chrome/Chromium ✅
 - Firefox ✅
-- Safari ✅  
+- Safari ✅
 - Edge ✅
 
 ---

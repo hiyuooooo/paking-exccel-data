@@ -15,15 +15,18 @@ Access your app at: **http://localhost:7020**
 ## 📋 Available Scripts
 
 ### Development
+
 - `pnpm dev` - Start development server with hot reload
 - `pnpm dev:local` - Start development server accessible on network
 
-### Production 
+### Production
+
 - `pnpm build` - Build for production
 - `pnpm start` - Start production server
 - `pnpm preview` - Preview production build locally
 
 ### Quality
+
 - `pnpm test` - Run tests
 - `pnpm typecheck` - TypeScript validation
 - `pnpm format.fix` - Format code with Prettier
@@ -31,7 +34,7 @@ Access your app at: **http://localhost:7020**
 ## 🌐 Web Development Workflow
 
 1. **Development**: `pnpm dev` → Edit code → See changes instantly
-2. **Testing**: `pnpm test` → Verify functionality  
+2. **Testing**: `pnpm test` → Verify functionality
 3. **Build**: `pnpm build` → Create production bundle
 4. **Deploy**: Use Netlify or Vercel MCP integration
 
@@ -44,9 +47,10 @@ Access your app at: **http://localhost:7020**
 ## 🎯 Focus Areas
 
 This application is **web-first** and optimized for:
+
 - Modern browsers
 - Cloud deployment
-- Mobile responsiveness  
+- Mobile responsiveness
 - Progressive enhancement
 
 ---
