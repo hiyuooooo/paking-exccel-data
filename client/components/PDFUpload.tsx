@@ -334,6 +334,85 @@ export default function PDFUpload({ onTransactionsImported }: PDFUploadProps) {
     return transactions;
   };
 
+  // Customer extraction function for alternative parsing (same logic as Excel)
+  const extractDepositorFromParticularsAlt = (particulars: string): string => {
+    // EXACT same logic as Excel's extractDepositorFromParticulars
+    if (particulars.includes("MPAY")) {
+      // Pattern 1: Skip transaction identifiers like UPITRTR and look for actual names
+      let mpayPattern =
+        /MPAY(?:UPITRTR|UPI|TRTR)?\d+\s+\d+\s+([A-Z][A-Z\s]+?)(?:SBIN|PUNB|BARB|JIOPXXX|UCBA|IBKL|XXX)/i;
+      let depositorMatch = particulars.match(mpayPattern);
+
+      if (depositorMatch) {
+        const name = depositorMatch[1].trim().replace(/\s+/g, " ");
+        return name.replace(/(?:SBIN|PUNB|BARB|UCBA|IBKL|JIOPXXX)XX$/i, '').trim();
+      } else {
+        // Pattern 2: Look for names after any MPAY transaction identifier and numbers
+        mpayPattern = /MPAY\w*\d+\s+\d*\s*([A-Z][A-Z\s]{2,20}?)(?:SBIN|PUNB|BARB|JIOPXXX|UCBA|IBKL|XXX|\d|$)/i;
+        depositorMatch = particulars.match(mpayPattern);
+        if (depositorMatch) {
+          const name = depositorMatch[1].trim().replace(/\s+/g, " ");
+          return name.replace(/(?:SBIN|PUNB|BARB|UCBA|IBKL|JIOPXXX)XX$/i, '').trim();
+        } else {
+          // Pattern 3: Fallback - look for names after MPAY but skip common transaction codes
+          mpayPattern = /MPAY(?:UPITRTR|UPI|TRTR)?.*?\d+.*?([A-Z][A-Z\s]{3,20}?)(?:[A-Z]{3,4}XXX|\d|$)/i;
+          depositorMatch = particulars.match(mpayPattern);
+          if (depositorMatch) {
+            const name = depositorMatch[1].trim().replace(/\s+/g, " ");
+            // Skip transaction identifiers
+            if (!name.match(/^(UPITRTR|TRTR|UPI|MPAY)$/i)) {
+              return name.replace(/(?:SBIN|PUNB|BARB|UCBA|IBKL|JIOPXXX)XX$/i, '').trim();
+            }
+          }
+        }
+      }
+    }
+
+    // Additional patterns for UPI and other transactions (copied from Excel)
+    const patterns = [
+      // UPI patterns - improved to skip transaction identifiers
+      /UPI(?:TRTR)?\d+\s+\d+\s+([A-Z][A-Z\s]+?)(?:SBIN|PUNB|BARB|JIOPXXX|UCBA|IBKL|XXX)/i,
+      /UPI\w*\d+\s+\d*\s*([A-Z][A-Z\s]{3,20}?)(?:SBIN|PUNB|BARB|JIOPXXX|UCBA|IBKL|XXX|\d|$)/i,
+
+      // TRANSFER patterns
+      /TRANSFER.*?(?:\d+)([A-Z][A-Z\s]+?)(?:SBIN|PUNB|BARB|JIOPXXX|UCBA|IBKL|XXX)/i,
+      /TRANSFER.*?([A-Z][A-Z\s]{2,20}?)(?:[A-Z]{3,4}XXX|\d|$)/i,
+
+      // NEFT patterns
+      /NEFT.*?(?:\d+)([A-Z][A-Z\s]+?)(?:SBIN|PUNB|BARB|JIOPXXX|UCBA|IBKL|XXX)/i,
+      /NEFT.*?([A-Z][A-Z\s]{2,20}?)(?:[A-Z]{3,4}XXX|\d|$)/i,
+
+      // RTGS patterns
+      /RTGS.*?(?:\d+)([A-Z][A-Z\s]+?)(?:SBIN|PUNB|BARB|JIOPXXX|UCBA|IBKL|XXX)/i,
+      /RTGS.*?([A-Z][A-Z\s]{2,20}?)(?:[A-Z]{3,4}XXX|\d|$)/i,
+
+      // Generic name pattern (fallback)
+      /([A-Z][A-Z\s]{2,20}?)(?:[A-Z]{3,4}XXX|\d|$)/i,
+      /([A-Z][A-Z\s]{2,20})/,
+    ];
+
+    for (const pattern of patterns) {
+      const match = particulars.match(pattern);
+      if (match) {
+        const name = match[1].trim().replace(/\s+/g, " ");
+        // Filter out common non-names and transaction identifiers
+        const cleanedName = name.replace(/(?:SBIN|PUNB|BARB|UCBA|IBKL|JIOPXXX)XX$/i, '').trim();
+
+        if (
+          !cleanedName.match(
+            /^(UPITRTR|TRTR|MPAY|UPI|TRANSFER|NEFT|RTGS|XXX|SBIN|PUNB|BARB|UCBA|IBKL|JIOPXXX)$/i,
+          ) &&
+          cleanedName.length > 2 &&
+          !cleanedName.match(/^\d+$/) // Exclude pure numbers
+        ) {
+          return cleanedName;
+        }
+      }
+    }
+
+    return "Unknown Customer";
+  };
+
   const parseTransactionLine = (
     line: string,
     allLines: string[],
