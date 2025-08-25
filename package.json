@@ -19,7 +19,7 @@
     "build:local": "vite build --outDir dist/local",
     "start": "node dist/server/node-build.mjs",
     "start:local": "npx serve dist/local -p 7020",
-    "build:exe": "npm run build && pkg dist/server/node-build.mjs --targets node18-win-x64 --output transaction-manager.exe",
+    "build:exe": "npm run build && pkg dist/server/standalone.js --targets node18-win-x64 --output transaction-manager.exe",
     "test": "vitest --run",
     "format.fix": "prettier --write .",
     "typecheck": "tsc",
