@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Manager - Web App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>💰 Transaction Manager</h1>
+                <p>Simple Web Application</p>
+            </div>
+            <div class="server-status" id="serverStatus">
+                <span class="status-indicator" id="statusIndicator">🟢</span>
+                <span id="statusText">Local Server Active</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="dashboard">
+                <div class="card">
+                    <h3>📊 Dashboard</h3>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalTransactions">0</span>
+                            <span class="stat-label">Total Transactions</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalAmount">₹0</span>
+                            <span class="stat-label">Total Amount</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="currentBalance">₹0</span>
+                            <span class="stat-label">Current Balance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>➕ Add Transaction</h3>
+                    <form id="transactionForm" class="transaction-form">
+                        <div class="form-group">
+                            <label for="customerName">Customer Name:</label>
+                            <input type="text" id="customerName" placeholder="Enter customer name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Amount:</label>
+                            <input type="number" id="amount" placeholder="Enter amount" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Transaction Type:</label>
+                            <select id="type" required>
+                                <option value="">Select Type</option>
+                                <option value="deposit">Deposit (+)</option>
+                                <option value="withdrawal">Withdrawal (-)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="details">Details:</label>
+                            <input type="text" id="details" placeholder="Transaction details">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Transaction</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Recent Transactions</h3>
+                <div class="table-container">
+                    <table id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Details</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsBody">
+                            <!-- Transactions will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🔧 Server Controls</h3>
+                <div class="server-controls">
+                    <button class="btn" onclick="testServer()">Test Server</button>
+                    <button class="btn" onclick="exportData()">Export Data</button>
+                    <button class="btn" onclick="clearData()">Clear All Data</button>
+                    <button class="btn" onclick="refreshApp()">Refresh App</button>
+                </div>
+                <div id="serverLog" class="server-log">
+                    <p>✅ Local server is running</p>
+                    <p>🌐 Access URL: <span id="currentURL"></span></p>
+                    <p>⏰ Started: <span id="startTime"></span></p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Transaction Manager - Local Web App</p>
+            <p>Press Ctrl+C in the server window to stop</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
