@@ -1,11 +1,11 @@
 @echo off
 color 0A
 echo ==========================================
-echo     Transaction Manager - Local Setup
+echo   Transaction Manager - Portable Version
 echo ==========================================
 echo.
-echo Welcome! Setting up your local transaction manager...
-echo This will automatically install everything you need.
+echo Welcome! Starting your portable transaction manager...
+echo This is a pre-built version that runs directly!
 echo.
 
 REM Check if Node.js is installed
@@ -37,18 +37,18 @@ echo PNPM version:
 pnpm --version
 echo.
 
-REM Check if dependencies are installed
-if not exist "node_modules" (
-    echo Installing dependencies...
-    echo This may take a few minutes on first run...
-    pnpm install
+REM Check if build exists
+if not exist "dist\local\index.html" (
+    echo Building the application...
+    echo This may take a moment...
+    pnpm run build:local
     if %errorlevel% neq 0 (
-        echo ERROR: Failed to install dependencies
+        echo ERROR: Failed to build the application
         pause
         exit /b 1
     )
     echo.
-    echo Dependencies installed successfully!
+    echo Build completed successfully!
     echo.
 )
 
@@ -56,7 +56,7 @@ echo ==========================================
 echo       STARTING TRANSACTION MANAGER
 echo ==========================================
 echo.
-echo ✅ Setup Complete!
+echo ✅ Portable Version Ready!
 echo ✅ Server starting on: http://localhost:7020
 echo ✅ Browser will open automatically
 echo.
@@ -67,8 +67,8 @@ echo.
 echo ==========================================
 echo.
 
-REM Start the development server
-echo 🚀 Starting development server...
+REM Start the production server
+echo 🚀 Starting production server...
 echo.
 echo Opening browser in 3 seconds...
 
@@ -77,14 +77,14 @@ timeout /t 3 /nobreak >nul
 start "" "http://localhost:7020"
 
 echo.
-echo ✨ Transaction Manager is starting...
+echo ✨ Transaction Manager is running...
 echo.
-pnpm dev
+pnpm run start:local
 
-REM If pnpm dev fails, keep window open to show error
+REM If start:local fails, keep window open to show error
 if %errorlevel% neq 0 (
     echo.
-    echo ERROR: Failed to start the development server
+    echo ERROR: Failed to start the server
     echo Please check the error messages above
     pause
 )
