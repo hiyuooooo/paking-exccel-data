@@ -36,7 +36,9 @@
     "build:mac": "npm run build && pkg dist/server/production.mjs --targets node18-macos-x64 --output transaction-manager-mac",
     "build:all": "npm run build && pkg dist/server/production.mjs --targets node18-win-x64,node18-linux-x64,node18-macos-x64 --out-path executables",
     "package:windows": "npm run build:windows && call build-windows.bat",
-    "setup:pkg": "npm install -g pkg"
+    "setup:pkg": "npm install -g pkg",
+    "create:windows": "npm run build && mkdir -p windows-package && cp -r dist windows-package/ && cp run.bat windows-package/ || echo 'Manual copy needed on Windows'",
+    "create:offline": "npm run build && mkdir -p offline-package && cp -r dist offline-package/ || echo 'Manual copy needed on Windows'"
   },
   "dependencies": {
     "dotenv": "^17.2.1",
