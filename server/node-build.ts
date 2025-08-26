@@ -16,8 +16,19 @@ console.log(`📦 Running from: ${process.execPath}`);
 const __dirname = import.meta.dirname;
 const distPath = path.join(__dirname, "../spa");
 
-// Serve static files
-app.use(express.static(distPath));
+console.log(`📂 Serving static files from: ${distPath}`);
+
+// Serve static files with proper headers
+app.use(express.static(distPath, {
+  index: false, // Don't auto-serve index.html for directories
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
+  }
+}));
 
 // Handle React Router - serve index.html for all non-API routes
 app.get("*", (req, res) => {
