@@ -7,7 +7,9 @@ const port = process.env.PORT || 3000;
 
 // Check if running as packaged executable
 const isPackaged = process.pkg !== undefined;
-console.log(`🚀 Transaction Manager ${isPackaged ? '(Packaged)' : '(Development)'}`);
+console.log(
+  `🚀 Transaction Manager ${isPackaged ? "(Packaged)" : "(Development)"}`,
+);
 console.log(`📦 Running from: ${process.execPath}`);
 
 // In production, serve the built SPA files

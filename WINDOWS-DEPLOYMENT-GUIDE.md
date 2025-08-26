@@ -3,6 +3,7 @@
 ## Overview
 
 This guide covers two deployment scenarios:
+
 1. **Development Mode** - For developers and source code users
 2. **Packaged Executable** - For end-users (standalone Windows app)
 
@@ -15,11 +16,12 @@ This guide covers two deployment scenarios:
 If you have the **packaged version** (`windows-package.zip`):
 
 1. **Extract** the downloaded zip file to any folder
-2. **Double-click** `start-app.bat` 
+2. **Double-click** `start-app.bat`
 3. **Wait** for the browser to open automatically
 4. **Start using** the Transaction Manager!
 
 ### What's Included in the Package
+
 ```
 windows-package/
 ├── transaction-manager.exe     # Main application (no Node.js needed)
@@ -31,6 +33,7 @@ windows-package/
 ```
 
 ### System Requirements
+
 - **Windows 10** or **Windows 11**
 - **Web Browser** (Chrome, Firefox, Edge - any modern browser)
 - **No additional software needed**
@@ -42,16 +45,19 @@ windows-package/
 ### For Developers and Advanced Users
 
 #### Prerequisites
+
 1. **Node.js v16+** - Download from [nodejs.org](https://nodejs.org/)
 2. **Git** (optional) - For cloning the repository
 
 #### Quick Setup
+
 1. **Download/Clone** the source code
 2. **Double-click** `run.bat` in the project folder
 3. **Wait** for automatic installation and startup
 4. **Browser opens** automatically at `http://localhost:7020`
 
 #### Manual Setup
+
 ```bash
 # Install dependencies
 pnpm install
@@ -60,7 +66,7 @@ npm install
 
 # Start development server
 pnpm dev
-# or  
+# or
 npm run dev
 ```
 
@@ -71,6 +77,7 @@ npm run dev
 ### For Developers: Building Distribution Package
 
 #### Step 1: Prepare Environment
+
 ```bash
 # Ensure Node.js 16+ is installed
 node --version
@@ -80,19 +87,22 @@ npm install -g pkg pnpm
 ```
 
 #### Step 2: Build Executable (Automated)
+
 ```bash
 # Run the automated build script
 ./build-windows.bat
 ```
 
 This will:
+
 - Install all dependencies
 - Build the client application
-- Build the server application  
+- Build the server application
 - Create `transaction-manager.exe`
 - Package everything in `windows-package/` folder
 
 #### Step 3: Manual Build (Alternative)
+
 ```bash
 # Build client and server
 pnpm run build
@@ -105,6 +115,7 @@ pnpm run build:all
 ```
 
 #### Step 4: Package for Distribution
+
 ```bash
 # Run packaging script
 pnpm run package:windows
@@ -115,6 +126,7 @@ pnpm run package:windows
 ## 📁 Directory Structure Explained
 
 ### Development Structure
+
 ```
 transaction-manager/
 ├── client/                    # React frontend source
@@ -134,6 +146,7 @@ transaction-manager/
 ```
 
 ### Distribution Structure
+
 ```
 windows-package/
 ├── transaction-manager.exe   # Standalone Node.js app
@@ -149,11 +162,13 @@ windows-package/
 ### Starting the Application
 
 #### Development Mode
+
 - **Quick:** Double-click `run.bat`
 - **Manual:** `pnpm dev` in terminal
 - **URL:** `http://localhost:7020`
 
-#### Packaged Mode  
+#### Packaged Mode
+
 - **Quick:** Double-click `start-app.bat` in package folder
 - **Manual:** Run `transaction-manager.exe` in terminal
 - **URL:** `http://localhost:3000`
@@ -161,6 +176,7 @@ windows-package/
 ### Application Features
 
 #### Core Functions
+
 - ✅ **Transaction Management** - Add, edit, delete transactions
 - ✅ **Customer Database** - Manage customer information
 - ✅ **Data Import** - PDF bank statements, Excel files
@@ -169,6 +185,7 @@ windows-package/
 - ✅ **Auto Backup** - Saves data every 5 minutes
 
 #### Keyboard Shortcuts
+
 - **A** - Add new transaction (when not editing)
 - **Enter** - Save changes (when editing)
 - **Escape** - Cancel editing
@@ -181,21 +198,26 @@ windows-package/
 ### Port Configuration
 
 #### Development Mode
+
 Edit `vite.config.ts`:
+
 ```typescript
 server: {
   port: 7020,  // Change this number
 }
 ```
 
-#### Production Mode  
+#### Production Mode
+
 Set environment variable:
+
 ```bash
 set PORT=8080
 transaction-manager.exe
 ```
 
 ### Environment Variables
+
 - **PORT** - Server port (default: 3000 in production, 7020 in dev)
 - **NODE_ENV** - Environment mode
 - **PING_MESSAGE** - Custom API message
@@ -207,42 +229,52 @@ transaction-manager.exe
 ### Common Issues
 
 #### "Port already in use"
+
 **Problem:** Another application is using the port
 
 **Solutions:**
+
 1. Close other applications using the port
 2. Change port in configuration
 3. Restart computer to free all ports
 
 #### "Node.js not found" (Development only)
+
 **Problem:** Node.js not installed or not in PATH
 
 **Solutions:**
+
 1. Install Node.js from [nodejs.org](https://nodejs.org/)
 2. Restart command prompt
 3. Verify with `node --version`
 
 #### "Dependencies failed to install"
+
 **Problem:** Network or permission issues
 
 **Solutions:**
+
 1. Check internet connection
 2. Run as Administrator
 3. Clear npm cache: `npm cache clean --force`
 4. Delete `node_modules` and try again
 
 #### "Browser doesn't open automatically"
+
 **Problem:** Default browser not set or blocked
 
 **Solutions:**
+
 1. Manually open browser to `http://localhost:7020` (dev) or `http://localhost:3000` (prod)
 2. Set default browser in Windows settings
 3. Check if antivirus is blocking
 
 #### "Application won't start"
+
 **Problem:** Various startup issues
 
 **Solutions:**
+
 1. Check Windows Event Viewer for errors
 2. Run in Command Prompt to see error messages
 3. Verify all files are present in package
@@ -251,6 +283,7 @@ transaction-manager.exe
 ### Debug Mode
 
 #### Development Debug
+
 ```bash
 # Run with verbose logging
 pnpm dev --debug
@@ -263,6 +296,7 @@ pnpm test
 ```
 
 #### Production Debug
+
 ```bash
 # Run executable with console output
 transaction-manager.exe
@@ -276,20 +310,23 @@ dir dist\spa
 ## 📊 Performance & Limits
 
 ### System Requirements
+
 - **RAM:** 4GB minimum, 8GB recommended
 - **Disk:** 100MB for application, 1GB for data
 - **CPU:** Any modern processor (2GHz+)
 - **Network:** Not required (fully offline)
 
 ### Data Limits
+
 - **Transactions:** Browser-dependent (typically 50,000+)
 - **Customers:** No hard limit
 - **File uploads:** 50MB maximum
 - **Backup files:** Usually under 10MB
 
 ### Performance Tips
+
 1. **Regular backups** - Export data weekly
-2. **Browser cache** - Clear monthly for best performance  
+2. **Browser cache** - Clear monthly for best performance
 3. **Close unused tabs** - Frees memory
 4. **Restart weekly** - Keeps performance optimal
 
@@ -298,12 +335,14 @@ dir dist\spa
 ## 🔒 Security & Privacy
 
 ### Data Security
+
 - **Local storage only** - No data sent to external servers
 - **Browser encryption** - Data encrypted by browser
 - **No tracking** - Application doesn't collect usage data
 - **Offline capable** - No internet required after setup
 
 ### Backup Security
+
 - **Export control** - You control all data exports
 - **Local files** - Backups saved to your computer only
 - **Standard formats** - JSON and Excel for transparency
@@ -315,12 +354,14 @@ dir dist\spa
 ### For Software Distributors
 
 #### Creating Distribution Package
+
 1. Run `build-windows.bat`
 2. Test the `windows-package/` folder
 3. Zip the entire `windows-package/` folder
 4. Distribute the zip file
 
 #### Package Contents Verification
+
 ```
 ✅ transaction-manager.exe (8-15MB)
 ✅ start-app.bat (< 1KB)
@@ -329,12 +370,14 @@ dir dist\spa
 ```
 
 #### Installation Instructions for Users
+
 1. Download and extract zip file
 2. Double-click `start-app.bat`
 3. Browser opens automatically
 4. Start using the application
 
 ### Virus Scanner Notes
+
 - **Executable files** may trigger antivirus warnings
 - **False positives** are common with packaged Node.js apps
 - **Whitelist** the application folder if needed
@@ -345,18 +388,21 @@ dir dist\spa
 ## 📞 Support & Maintenance
 
 ### Self-Diagnostics
+
 1. **Check browser console** (F12) for error messages
 2. **Verify file integrity** - Ensure all files are present
 3. **Test with different browser** - Rule out browser issues
 4. **Restart application** - Often resolves temporary issues
 
 ### Update Process
+
 1. **Export data** before updating
 2. **Replace application files** with new version
 3. **Keep existing data** (stored in browser)
 4. **Import data** if needed
 
 ### Maintenance Schedule
+
 - **Weekly:** Export backup data
 - **Monthly:** Clear browser cache
 - **Quarterly:** Update to latest version
@@ -366,6 +412,7 @@ dir dist\spa
 ## 📋 Quick Reference
 
 ### Development Commands
+
 ```bash
 pnpm install           # Install dependencies
 pnpm dev              # Start development server
@@ -375,12 +422,14 @@ pnpm package:windows  # Create distribution package
 ```
 
 ### File Locations
+
 - **Development:** `http://localhost:7020`
 - **Production:** `http://localhost:3000`
 - **Data:** Browser localStorage
 - **Backups:** Downloads folder (when exported)
 
 ### Key Files
+
 - **`run.bat`** - Development launcher
 - **`start-app.bat`** - Production launcher (in package)
 - **`transaction-manager.exe`** - Standalone application
@@ -388,4 +437,4 @@ pnpm package:windows  # Create distribution package
 
 ---
 
-*🎉 Your Transaction Manager is now ready for Windows deployment! Whether running in development mode or as a packaged executable, you have complete control over your financial data with no external dependencies.*
+_🎉 Your Transaction Manager is now ready for Windows deployment! Whether running in development mode or as a packaged executable, you have complete control over your financial data with no external dependencies._
