@@ -19,6 +19,7 @@ If you're seeing a **white page** instead of the Transaction Manager, here's how
 ### 🏗️ **Step 2: Test Production Build**
 
 1. **Build the project:**
+
    ```cmd
    pnpm run build
    ```
@@ -32,7 +33,6 @@ If you're seeing a **white page** instead of the Transaction Manager, here's how
    ```cmd
    node dist\server\production.mjs
    ```
-   
 4. **Open browser to:** `http://localhost:3000`
 
 **Expected:** Transaction Manager loads properly
@@ -42,11 +42,13 @@ If you're seeing a **white page** instead of the Transaction Manager, here's how
 ### 🎯 **Step 3: Test Windows Package**
 
 1. **Create package:**
+
    ```cmd
    build-windows.bat
    ```
 
 2. **Go to package folder:**
+
    ```cmd
    cd windows-package
    ```
@@ -63,29 +65,37 @@ If you're seeing a **white page** instead of the Transaction Manager, here's how
 ### 🔧 **Common Issues & Fixes**
 
 #### **White Page - Assets Not Loading**
+
 **Problem:** CSS/JS files not found
 **Solution:**
+
 - Check if `dist\spa\assets\` contains .js and .css files
 - Verify server is serving static files correctly
 - Try different browser or incognito mode
 
 #### **"Cannot GET /" Error**
+
 **Problem:** Server routing issue
 **Solution:**
+
 - Make sure `dist\server\production.mjs` exists
 - Check if port 3000 is available
 - Try running server directly: `node dist\server\production.mjs`
 
 #### **Console Errors**
+
 **Problem:** JavaScript errors preventing app load
 **Solution:**
+
 - Open browser console (F12)
 - Look for red error messages
 - Check if all assets loaded properly
 
 #### **Port Already in Use**
+
 **Problem:** Port 3000 or 7020 occupied
 **Solution:**
+
 - Close other applications
 - Kill Node.js processes: `taskkill /f /im node.exe`
 - Restart computer
@@ -115,18 +125,21 @@ netstat -an | findstr :7020
 ### ✅ **Success Indicators**
 
 **Development Working:**
+
 - Command shows "ready in XXXms"
 - Browser opens to localhost:7020
 - Transaction Manager interface loads
 - No console errors
 
 **Production Working:**
+
 - Server logs show "Server running on port 3000"
 - Browser opens to localhost:3000
 - Same Transaction Manager interface
 - Assets load correctly
 
 **Package Working:**
+
 - `start.bat` launches without errors
 - Browser opens automatically
 - Full app functionality available
@@ -145,6 +158,7 @@ netstat -an | findstr :7020
 ### 📋 **Report Format**
 
 If still having issues, please share:
+
 - **OS:** Windows version
 - **Node.js version:** `node --version`
 - **Browser:** Which browser and version
