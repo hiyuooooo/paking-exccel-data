@@ -1,153 +1,93 @@
 @echo off
-setlocal enabledelayedexpansion
 color 0B
-
 echo ==========================================
-echo   Building Windows Executable Package
+echo   Building Windows Package
 echo ==========================================
 echo.
 
-REM Check if Node.js is installed
+REM Check Node.js
 node --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo ❌ ERROR: Node.js is not installed
-    echo Please install Node.js from https://nodejs.org/
+if errorlevel 1 (
+    echo ❌ Node.js not found! Install from https://nodejs.org/
     pause
     exit /b 1
 )
 
-REM Check if pnpm is installed, if not use npm
-pnpm --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo 📦 Using npm (pnpm not found)
-    set PKG_MANAGER=npm
-) else (
-    echo 📦 Using pnpm
-    set PKG_MANAGER=pnpm
-)
-
+echo ✅ Node.js found
 echo.
-echo 🔧 Step 1: Installing dependencies...
-%PKG_MANAGER% install
-if %errorlevel% neq 0 (
+
+REM Install dependencies
+echo 📦 Step 1: Installing dependencies...
+if exist "pnpm-lock.yaml" (
+    pnpm install
+) else (
+    npm install
+)
+if errorlevel 1 (
     echo ❌ Failed to install dependencies
     pause
     exit /b 1
 )
 
+echo ✅ Dependencies installed
 echo.
-echo 🏗️  Step 2: Building client application...
-%PKG_MANAGER% run build:client
-if %errorlevel% neq 0 (
-    echo ❌ Failed to build client
-    pause
-    exit /b 1
+
+REM Build the project
+echo 🏗️ Step 2: Building project...
+pnpm run build
+if errorlevel 1 (
+    npm run build
+    if errorlevel 1 (
+        echo ❌ Build failed
+        pause
+        exit /b 1
+    )
 )
 
+echo ✅ Build completed
 echo.
-echo 🏗️  Step 3: Building server application...
-%PKG_MANAGER% run build:server
-if %errorlevel% neq 0 (
-    echo ❌ Failed to build server
-    pause
-    exit /b 1
-)
 
-echo.
-echo 📦 Step 4: Installing pkg for executable creation...
-npm install -g pkg
-if %errorlevel% neq 0 (
-    echo ❌ Failed to install pkg
-    pause
-    exit /b 1
-)
-
-echo.
-echo 📦 Step 5: Creating Windows executable...
-
-REM Create the executable using pkg
-pkg dist/server/production.mjs --targets node18-win-x64 --output transaction-manager.exe
-if %errorlevel% neq 0 (
-    echo ❌ Failed to create executable
-    pause
-    exit /b 1
-)
-
-echo.
-echo 📁 Step 6: Creating distribution package...
-
-REM Create distribution folder
+REM Create package directory
+echo 📦 Step 3: Creating Windows package...
 if exist "windows-package" rmdir /s /q "windows-package"
 mkdir "windows-package"
 
-REM Copy necessary files
-copy "transaction-manager.exe" "windows-package\"
+REM Copy built files
+xcopy "dist" "windows-package\dist\" /E /I /Q
 copy "run.bat" "windows-package\"
-copy "LOCAL_DEPLOYMENT.md" "windows-package\INSTALLATION-GUIDE.md"
-xcopy "dist\spa" "windows-package\dist\spa\" /E /I /Q
-mkdir "windows-package\dist\server"
-copy "dist\server\production.mjs" "windows-package\dist\server\"
 
-REM Create simplified run.bat for distribution
-echo @echo off > "windows-package\start-app.bat"
-echo color 0A >> "windows-package\start-app.bat"
-echo echo ========================================== >> "windows-package\start-app.bat"
-echo echo     Transaction Manager - Starting... >> "windows-package\start-app.bat"
-echo echo ========================================== >> "windows-package\start-app.bat"
-echo echo. >> "windows-package\start-app.bat"
-echo echo 🚀 Starting Transaction Manager... >> "windows-package\start-app.bat"
-echo echo 🌐 Browser will open automatically >> "windows-package\start-app.bat"
-echo echo 🛑 Close this window to stop the app >> "windows-package\start-app.bat"
-echo echo. >> "windows-package\start-app.bat"
-echo timeout /t 2 /nobreak ^>nul >> "windows-package\start-app.bat"
-echo start "" "http://localhost:3000" >> "windows-package\start-app.bat"
-echo echo ✨ Running on: http://localhost:3000 >> "windows-package\start-app.bat"
-echo echo. >> "windows-package\start-app.bat"
-echo "%~dp0transaction-manager.exe" >> "windows-package\start-app.bat"
-echo pause >> "windows-package\start-app.bat"
+REM Create simple start script for package
+echo @echo off > "windows-package\start.bat"
+echo color 0A >> "windows-package\start.bat"
+echo echo Transaction Manager - Starting... >> "windows-package\start.bat"
+echo echo. >> "windows-package\start.bat"
+echo timeout /t 2 /nobreak ^>nul >> "windows-package\start.bat"
+echo start "" "http://localhost:3000" >> "windows-package\start.bat"
+echo node dist\server\production.mjs >> "windows-package\start.bat"
+echo pause >> "windows-package\start.bat"
 
-REM Create README for the package
-echo # Transaction Manager - Windows Standalone Version > "windows-package\README.txt"
+REM Create README
+echo # Transaction Manager - Windows Package > "windows-package\README.txt"
 echo. >> "windows-package\README.txt"
-echo ## Quick Start >> "windows-package\README.txt"
-echo 1. Double-click "start-app.bat" to run the application >> "windows-package\README.txt"
-echo 2. Your browser will open automatically >> "windows-package\README.txt"
-echo 3. Close the command window to stop the application >> "windows-package\README.txt"
+echo Quick Start: >> "windows-package\README.txt"
+echo 1. Make sure Node.js is installed (https://nodejs.org/) >> "windows-package\README.txt"
+echo 2. Double-click start.bat >> "windows-package\README.txt"
+echo 3. Browser will open automatically >> "windows-package\README.txt"
 echo. >> "windows-package\README.txt"
-echo ## What's Included >> "windows-package\README.txt"
-echo - transaction-manager.exe: Main application server >> "windows-package\README.txt"
-echo - start-app.bat: Quick launcher script >> "windows-package\README.txt"
-echo - dist/: Web application files >> "windows-package\README.txt"
-echo - INSTALLATION-GUIDE.md: Detailed instructions >> "windows-package\README.txt"
-echo. >> "windows-package\README.txt"
-echo ## Requirements >> "windows-package\README.txt"
-echo - Windows 10 or Windows 11 >> "windows-package\README.txt"
-echo - No additional software needed >> "windows-package\README.txt"
-echo - Web browser (Chrome, Firefox, Edge) >> "windows-package\README.txt"
-echo. >> "windows-package\README.txt"
-echo ## Features >> "windows-package\README.txt"
-echo - Complete transaction management >> "windows-package\README.txt"
-echo - Customer database >> "windows-package\README.txt"
-echo - Data import/export (PDF, Excel) >> "windows-package\README.txt"
-echo - Monthly reports and summaries >> "windows-package\README.txt"
-echo - Automatic data backup >> "windows-package\README.txt"
-echo - Runs entirely offline >> "windows-package\README.txt"
+echo Requirements: >> "windows-package\README.txt"
+echo - Node.js v16 or higher >> "windows-package\README.txt"
+echo - Modern web browser >> "windows-package\README.txt"
 
 echo.
-echo ✅ Build completed successfully!
+echo ✅ Package created successfully!
 echo.
-echo 📂 Package location: windows-package\
+echo 📂 Location: windows-package\
 echo 📁 Contents:
-echo    • transaction-manager.exe (standalone server)
-echo    • start-app.bat (quick launcher)
-echo    • dist\ (web application files)
-echo    • README.txt (user instructions)
-echo    • INSTALLATION-GUIDE.md (detailed guide)
+echo    • dist\ - Application files
+echo    • start.bat - Launch script
+echo    • README.txt - Instructions
 echo.
-echo 🚀 To test: Go to windows-package\ and run start-app.bat
-echo 📦 To distribute: Zip the windows-package\ folder
+echo 🧪 Test: Go to windows-package\ and run start.bat
+echo 📦 Distribute: Zip the windows-package\ folder
 echo.
-echo ==========================================
-echo     Build Process Complete! 
-echo ==========================================
 pause
