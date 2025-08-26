@@ -30,7 +30,13 @@
     "format.fix": "prettier --write .",
     "typecheck": "tsc",
     "local:setup": "npm install && npm run build:local",
-    "local:run": "npm run start:local"
+    "local:run": "npm run start:local",
+    "build:windows": "npm run build && pkg dist/server/production.mjs --targets node18-win-x64 --output transaction-manager.exe",
+    "build:linux": "npm run build && pkg dist/server/production.mjs --targets node18-linux-x64 --output transaction-manager-linux",
+    "build:mac": "npm run build && pkg dist/server/production.mjs --targets node18-macos-x64 --output transaction-manager-mac",
+    "build:all": "npm run build && pkg dist/server/production.mjs --targets node18-win-x64,node18-linux-x64,node18-macos-x64 --out-path executables",
+    "package:windows": "npm run build:windows && call build-windows.bat",
+    "setup:pkg": "npm install -g pkg"
   },
   "dependencies": {
     "dotenv": "^17.2.1",
